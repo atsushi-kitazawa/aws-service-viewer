@@ -1,6 +1,8 @@
 package gui
 
 import (
+	"regexp"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -21,9 +23,11 @@ var (
 		"":    {"ec2"},
 		"ec2": {"instance", "snapshot(coming soon...)"},
 	}
-	regionData = []string{"us-east-2", "us-east-1", "us-west-1", "us-west-2", "af-south-1", "ap-east-1",
-		"ap-southeast-1", "ap-southeast-2", "ap-southeast-3", "ap-south-1",
-		"ap-northeast-1", "ap-northeast-2", "ap-northeast-3", "ca-central-1", "eu-central-1"}
+	regionData = []string{"Ohio(us-east-2)", "N. Virginia(us-east-1)", "N. California(us-west-1)",
+		"Oregon(us-west-2)", "Cape Town(af-south-1)", "Hong Kong(ap-east-1)",
+		"Singapore(ap-southeast-1)", "Sydney(ap-southeast-2)", "Jakarta(ap-southeast-3)",
+		"Mumbai(ap-south-1)", "Tokyo(ap-northeast-1)", "Seoul(ap-northeast-2)", "Osaka(ap-northeast-3)",
+		"Central(ca-central-1)", "Frankfurt(eu-central-1)"}
 )
 
 func (c *ServiceContent) makeTree() {
@@ -53,7 +57,7 @@ func (c *ServiceContent) makeTable(data [][]string) {
 
 func (c *ServiceContent) makeRegionsEntry() {
 	regionEntry := widget.NewSelect(regionData, func(s string) {
-		target.SetRegion(s)
+		target.SetRegion(findRegionId(s))
 		d := target.DescribeTarget()
 		c.makeTable(d)
 		updateContent(c.makeContainer())
@@ -84,4 +88,10 @@ func Run() {
 
 func updateContent(c *container.Split) {
 	w.SetContent(c)
+}
+
+func findRegionId(s string) string {
+	regionMathcer := regexp.MustCompile(`.*\((.*)\)`)
+	group := regionMathcer.FindSubmatch([]byte(s))
+	return string(group[1])
 }
