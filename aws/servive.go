@@ -28,8 +28,8 @@ func (t *target) SetRegion(name string) {
 func (t *target) DescribeTarget() [][]string {
 	fmt.Println(t.service)
 	switch t.service {
-	case "EC2":
-		fmt.Println("ec2 region=" + t.region)
+	case "instance":
+		fmt.Println("ec2 instance region=" + t.region)
 		result, err := EC2Infomation(t.region)
 		if err != nil {
 			fmt.Println(err)

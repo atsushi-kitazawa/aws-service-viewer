@@ -18,7 +18,8 @@ var (
 	w        fyne.Window
 	target   = aws.NewTarget()
 	treeData = map[string][]string{
-		"": {"EC2"},
+		"":    {"ec2"},
+		"ec2": {"instance", "snapshot(coming soon...)"},
 	}
 	regionData = []string{"us-east-2", "us-east-1", "us-west-1", "us-west-2", "af-south-1", "ap-east-1",
 		"ap-southeast-1", "ap-southeast-2", "ap-southeast-3", "ap-south-1",
@@ -62,7 +63,7 @@ func (c *ServiceContent) makeRegionsEntry() {
 
 func (c *ServiceContent) makeContainer() *container.Split {
 	split := container.NewHSplit(c.tree, container.NewBorder(c.regions, nil, nil, nil, c.table))
-	split.Offset = 0.2
+	split.Offset = 0.35
 	return split
 }
 
@@ -77,7 +78,7 @@ func Run() {
 
 	updateContent(content.makeContainer())
 
-	w.Resize(fyne.NewSize(750, 500))
+	w.Resize(fyne.NewSize(800, 500))
 	w.ShowAndRun()
 }
 
