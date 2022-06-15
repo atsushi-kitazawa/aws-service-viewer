@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"github.com/atsushi-kitazawa/aws-service-viewer/aws"
 )
@@ -58,9 +59,13 @@ func (c *ServiceContent) makeTable(data [][]string) {
 func (c *ServiceContent) makeRegionsEntry() {
 	regionEntry := widget.NewSelect(regionData, func(s string) {
 		target.SetRegion(findRegionId(s))
-		d := target.DescribeTarget()
-		c.makeTable(d)
-		updateContent(c.makeContainer())
+		d, err := target.DescribeTarget()
+		if err != nil {
+			dialog.ShowConfirm("warning", err.Error(), nil, w)
+		} else {
+			c.makeTable(d)
+			updateContent(c.makeContainer())
+		}
 	})
 	c.regions = regionEntry
 }

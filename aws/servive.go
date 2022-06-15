@@ -1,6 +1,9 @@
 package aws
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type target struct {
 	service string
@@ -25,7 +28,7 @@ func (t *target) SetRegion(name string) {
 	t.region = name
 }
 
-func (t *target) DescribeTarget() [][]string {
+func (t *target) DescribeTarget() ([][]string, error) {
 	fmt.Println(t.service)
 	switch t.service {
 	case "instance":
@@ -33,12 +36,11 @@ func (t *target) DescribeTarget() [][]string {
 		result, err := EC2Infomation(t.region)
 		if err != nil {
 			fmt.Println(err)
-			return [][]string{}
+			return [][]string{}, nil
 		}
-		return result2string(result)
+		return result2string(result), nil
 	default:
-		fmt.Println("default")
-		return dummy()
+		return nil, errors.New("please specify service in tree")
 	}
 }
 
